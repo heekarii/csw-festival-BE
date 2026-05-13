@@ -61,7 +61,7 @@ class WaitingResponse(BaseModel):
 
 # 메모리상에만 저장하는 예시 (총 24개 테이블)
 tables: List[Table] = [
-    Table(id=i, name=f"테이블 {i}") for i in range(1, 25)
+    Table(id=i, name=f"테이블 {i}") for i in range(1, 18)
 ]
 
 waiting_list: List[WaitingEntry] = []
@@ -93,6 +93,7 @@ def create_waiting(request: WaitingRequest):
     global next_waiting_id
     entry = WaitingEntry(id=next_waiting_id, phone=request.phone.strip(), partySize=request.people)
     waiting_list.append(entry)
+    print(f"대기 등록: {entry}")
     next_waiting_id += 1
     return {"result": True}
 
@@ -115,6 +116,7 @@ def get_waiting_position(request: WaitingPositionRequest):
 
 @app.get("/waiting", response_model=List[WaitingResponse])
 def list_waiting():
+    print(f"현재 대기 리스트: {waiting_list}")
     return [
         WaitingResponse(
             id=entry.id,
@@ -133,3 +135,10 @@ def enter_from_waiting(id: int):
             return {"result": True}
     raise HTTPException(404, "대기 번호가 없습니다")
 
+@app.post("/waiting/{id}/delete")
+def delete_waiting(id: int):
+    for index, entry in enumerate(waiting_list):
+        if entry.id == id:
+            del waiting_list[index]
+            return {"result": True}
+    raise HTTPException(404, "대기 번호가 없습니다")
