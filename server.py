@@ -96,7 +96,7 @@ def create_waiting(request: WaitingRequest):
     next_waiting_id += 1
     return {"result": True}
 
-@app.post("/get_position")
+@app.post("/waiting/position")
 def get_waiting_position(request: WaitingPositionRequest):
     phone = request.phone.strip()
     if not phone:
@@ -125,5 +125,11 @@ def list_waiting():
         for index, entry in enumerate(waiting_list)
     ]
 
-
+@app.post("/waiting/{id}/enter")
+def enter_from_waiting(id: int):
+    for index, entry in enumerate(waiting_list):
+        if entry.id == id:
+            del waiting_list[index]
+            return {"result": True}
+    raise HTTPException(404, "대기 번호가 없습니다")
 
