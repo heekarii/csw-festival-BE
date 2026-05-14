@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, model_validator
 from typing import List, Optional
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 app = FastAPI()
 
@@ -13,6 +14,7 @@ app.add_middleware(
     allow_origins=["http://localhost:3000",
                    "https://localhost:3000",
                    "https://festival-jrgq6rxju-choheeseoks-projects.vercel.app",
+                   "https://2025-festival-fe.vercel.app",
                    "https://festival.heekari.com"
                    ],
     allow_methods=["*"],
