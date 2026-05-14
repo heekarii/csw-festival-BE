@@ -93,7 +93,16 @@ def reset_table(table_id: int):
 @app.post("/waiting")
 def create_waiting(request: WaitingRequest):
     global next_waiting_id
-    entry = WaitingEntry(id=next_waiting_id, phone=request.phone.strip(), partySize=request.people)
+
+    phone = request.phone.strip()
+    for entry in waiting_list:
+        if entry.phone == phone:
+            return {
+            "result": False,
+            "message" : "이미 예약 등록한 전화번호입니다."
+        }
+
+    entry = WaitingEntry(id=next_waiting_id, phone = phone, partySize=request.people)
     waiting_list.append(entry)
     print(f"대기 등록: {entry}")
     next_waiting_id += 1
